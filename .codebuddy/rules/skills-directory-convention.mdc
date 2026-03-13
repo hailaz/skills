@@ -1,0 +1,46 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-03-13T07:24:29.006Z
+provider: 
+---
+
+# 技能目录规范
+
+## 目录结构
+
+本项目使用三个技能目录，但只有一个存放实体文件：
+
+- **`.agents/skills/`** — 唯一的技能实体存放处（Single Source of Truth）
+- **`skills/`** — 通过软链接指向 `.agents/skills/`（项目级技能注册）
+- **`.codebuddy/skills/`** — 通过软链接指向 `.agents/skills/`（CodeBuddy 技能注册）
+
+## 规则
+
+### 1. 新建技能必须放在 `.agents/skills/`
+
+所有新技能的实体文件**必须**创建在 `.agents/skills/<skill-name>/` 目录下。**禁止**直接在 `skills/` 或 `.codebuddy/skills/` 中创建实体目录。
+
+### 2. 创建技能后必须同步
+
+新建、删除或移动技能后，必须运行同步脚本：
+
+```bash
+bash .agents/sync-skills.sh
+```
+
+或先预览变更：
+
+```bash
+bash .agents/sync-skills.sh --dry-run
+```
+
+### 3. 软链接路径约定
+
+- `skills/<name>` → `../.agents/skills/<name>`
+- `.codebuddy/skills/<name>` → `../../.agents/skills/<name>`
+
+### 4. 遇到实体目录须迁移
+
+如果在 `skills/` 或 `.codebuddy/skills/` 中发现实体目录（非软链接），应将其移动到 `.agents/skills/` 后创建软链接替代。
